@@ -19,7 +19,6 @@ Access the online tool here:
 - 🔐 **Random Key Generator** — creates cryptographically secure keys in the browser.  
 - 🧠 **Type-aware Inputs** — form fields adapt to the data type defined in the schema.  
 - ⚡ **Real-time Preview** — instant visualization of the resulting `config.json`.  
-- 💾 **Offline Use** — fully client-side, no data is sent to any server.  
 
 ---
 
