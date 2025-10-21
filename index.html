@@ -1,3 +1,4 @@
+<DOCUMENT filename="index.html">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,42 +6,128 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MeshCentral Config Generator</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ajv/6.12.6/ajv.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.11/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.11/theme/dracula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.11/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.11/mode/javascript/javascript.min.js"></script>
 <style>
 /* === General Styles === */
 body {
     font-family: Arial, sans-serif;
     background-color: #1e1e2f;
-    color: #ddd;
+    color: #aaaaaa;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+	font-size: 14px;
 }
 h1 { text-align: center; padding: 2px; margin-block-start: 0; margin-block-end: 0;}
-#validationMsg { position: absolute; text-align:center; padding:2px; margin-top: 60px; font-size: small }
+#validationMsg { font-size: small; margin-left: 10px; }
 .header-top {
-    display: flex;
+	display: flex;
+	padding: 10px 20px;
+    user-select: none;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 10px;
-    user-select: none;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 10px;
+}
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.header-center {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 .header-right {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 0.8em;
+}
+.profile-dropdown {
+	position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.profile-name {
+    color: #ddd;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+}
+.dropdown-menu {
+	position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #21262d;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    min-width: 150px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    font-size: smaller;
+}
+.dropdown-menu a {
+	color: #c9d1d8;
+    text-decoration: none;
+    padding: 8px 16px;
+    display: block;
+    transition: background-color 0.2s ease;
+}
+.dropdown-menu a:hover {
+    background-color: #444;
 }
 .logo {
-    width: 16px;
-    height: 16px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
 }
-.container { display: flex; height: calc(100vh - 50px); overflow: hidden; }
+.help-icon {
+    font-size: 1.2em;
+    color: #888;
+    cursor: help;
+    position: relative;
+}
+.help-tooltip {
+    display: none;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    width: 300px;
+    background: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    z-index: 10;
+    font-size: 0.9em;
+    text-align: left;
+}
+.container { display: flex; height: calc(100vh - 60px); overflow: hidden; }
 .column { overflow: auto; padding: 10px; box-sizing: border-box; }
-.column.left { flex-basis: 66%; min-width: 300px; margin-left: 15px; margin-bottom: 10px; padding-top: 0; }
-.column.right { flex:1; background:#2a2a3d; font-family: monospace; white-space: pre; color:#0f0; margin-right: 15px; margin-bottom: 10px; }
+.column.left { flex-basis: 58%; min-width: 300px; margin-left: 15px; margin-bottom: 10px; padding-top: 0; }
+.column.right { flex:1; background:#2a2a3d; margin-right: 15px; margin-bottom: 10px; padding: 0; }
 .resizer { width: 15px; cursor: col-resize; background-color: #1e1e2f; }
 #formContainer > .field-row { display: none } /* to be checked */
+
+/* CodeMirror styles */
+.CodeMirror {
+    height: 100%;
+    width: 100%;
+    border: none;
+}
+.cm-s-dracula .cm-property { color: #aaaaaa !important; }
+.cm-s-dracula .cm-string:not(.cm-property) { color: #0f0 !important; }
+.cm-s-dracula .cm-number { color: #ae81ff !important; }
+.cm-s-dracula .cm-atom { color: #f92672 !important; }
+
 
 /* === Accordion === */
 .section { border: 1px solid #333; border-radius: 6px; margin-bottom: 5px; }
@@ -54,7 +141,7 @@ h1 { text-align: center; padding: 2px; margin-block-start: 0; margin-block-end: 
     user-select:none;
 }
 .section .title { font-weight:bold; }
-.section .badge { font-size:0.7em; background:#444; padding:0px 2px; border-radius:2px; margin-left:10px; }
+.section .badge { font-size:0.6em; background: #0000008a; padding:2px 2px; border-radius:2px; margin-left:10px; }
 .tooltip {
     position:absolute;
     background:#333;
@@ -69,24 +156,25 @@ h1 { text-align: center; padding: 2px; margin-block-start: 0; margin-block-end: 
 .content { padding:6px 10px 6px 45px; display:flex; flex-direction:column; gap:6px; }
 
 /* === Field Row === */
-.field-row { display:flex; align-items:center; gap:6px; margin:2px 0; }
+.field-row { display:flex; align-items:center; /*gap:6px*/; margin:2px 0; }
 .field-row input[type="text"], .field-row input[type="number"], .field-row textarea, .field-row select {
     background:#1e1e2f;
-    color:#ddd;
-    border:1px solid #555;
+    color:#0f0;
+    border: 1px solid #55555530;
     border-radius:4px;
     padding:4px 6px;
     flex:1;
+	margin-left: 45px;
 }
-.field-row button { margin-left:6px; cursor:pointer; border:none; border-radius:4px; padding:4px 8px; background:#444; color:#fff; }
+.field-row button { margin-left:6px; cursor:pointer; border:none; border-radius:4px; padding:4px 8px; background:#444; color:#ddd; font-size: 0.7em; }
 .field-row button:hover { background:#555; }
-.field-row .badge { font-size:0.7em; background:#444; padding:0px 2px; border-radius:2px; margin-left:10px; cursor: default; user-select: none;}
-.field-row .tooltip-icon { font-size:0.7em; cursor: default; opacity: 0.9; color: #888; margin-left:5px; user-select: none;}
+.field-row .badge { font-size:0.6em; background: #0000008a; padding:2px 2px; border-radius:2px; margin-left:10px; cursor: default; user-select: none;}
+.field-row .tooltip-icon { font-size:0.7em; cursor: default; opacity: 0.9; color: #888; margin-left:4px; user-select: none;}
 .three-state-toggle { user-select: none; }
 
 
 .section .header .tooltip-icon {
-    margin-left: 5px;
+    margin-left: 4px;
     color: #888;
     cursor: pointer;
     font-size: 0.7em;
@@ -114,8 +202,8 @@ h1 { text-align: center; padding: 2px; margin-block-start: 0; margin-block-end: 
     transform: scale(1.05);
 }
 .three-state-toggle[data-state="unset"] {
-    background: #666;
-    color: #ddd;
+    background: #40405e6e;
+    color: #dddddd6e;
 }
 .three-state-toggle[data-state="true"] {
     background: #4caf50;
@@ -132,69 +220,163 @@ h1 { text-align: center; padding: 2px; margin-block-start: 0; margin-block-end: 
 
 /* === Upload Button === */
 #uploadLabel {
-    display:inline-block;
-    padding:6px 12px;
-    background:#444;
-    color:#fff;
-    border-radius:4px;
-    cursor:pointer;
+	background-color: #2c2c44 !important;
+    color: #c9d1d8;
+    border: 1px solid #30363d;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
-#uploadLabel:hover { background:#555; }
+#uploadLabel:hover { background:#555 !important; }
 #uploadConfig { display:none; }
 
 /* === Download Button === */
 #downloadBtn {
-    display:inline-block;
-    padding:6px 12px;
-    background:#444;
-    color:#fff;
-    border:none;
-    border-radius:4px;
-    cursor:pointer;
+	background-color: #2c2c44 !important;
+    color: #c9d1d8;
+    border: 1px solid #30363d;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
-#downloadBtn:hover { background:#555; }
+#downloadBtn:hover { background:#555 !important; }
+
+/* === Copy Button === */
+#copyBtn {
+	background-color: #2c2c44 !important;
+    color: #c9d1d8;
+    border: 1px solid #30363d;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin-left: 5px;
+}
+#copyBtn:hover { background:#555 !important; }
+#copyBtn.copied {
+    background-color: #4caf50 !important;
+    color: white;
+}
 
 /* === Scrollbars Dark === */
 ::-webkit-scrollbar { width:10px; height:10px; }
 ::-webkit-scrollbar-thumb { background:#555; border-radius:5px; }
 ::-webkit-scrollbar-track { background:#222; }
+
+/* Mobile adaptations */
+@media (max-width: 768px) {
+    .header-top {
+        flex-direction: column;
+        gap: 10px;
+    }
+    #validationMsg {
+        position: static;
+        margin-top: 0;
+    }
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
+    .column.left, .column.right {
+        flex-basis: auto;
+        margin: 0;
+        padding: 10px;
+    }
+    .resizer {
+        display: none;
+    }
+    .help-tooltip {
+        left: auto;
+        right: 0;
+        width: 90vw;
+    }
+}
 </style>
 </head>
 <body>
 
 <div class="header-top">
-    <div style="display: flex; align-items: center; gap: 20px;">
+    <div class="header-left">
         <h1 style="margin: 0; padding: 0;">MeshCentral Config Generator</h1>
+        <span class="help-icon">?
+            <div class="help-tooltip">
+                <p>This app is a configuration generator for MeshCentral, using the official schema from <a href="https://raw.githubusercontent.com/Ylianst/MeshCentral/master/meshcentral-config-schema.json" target="_blank" style="color: #0f0;">MeshCentral Schema</a>.</p>
+                <p>Objective: Easily create or edit config.json files for MeshCentral servers.</p>
+                <p>How to use:</p>
+                <ul>
+                    <li>Optionally upload an existing config.json to edit.</li>
+                    <li>Fill in or modify fields in the form.</li>
+                    <li>Download the generated config.json.</li>
+                </ul>
+            </div>
+        </span>
         <div id="validationMsg"></div>
     </div>
     <div class="header-right">
-        <img src="https://avatars.githubusercontent.com/u/106290334" alt="Logo" class="logo">
-        <a href="https://github.com/Melo-Professional/" target="_blank" style="color: #ddd; text-decoration: none;">Melo</a>
+        <label id="uploadLabel">Upload
+            <input type="file" id="uploadConfig" accept=".json, .txt">
+        </label>
+        <button id="downloadBtn">Download</button>
+        <button id="copyBtn">Copy</button>
+        <div class="profile-dropdown">
+            <img src="https://avatars.githubusercontent.com/u/106290334" alt="Logo" class="logo">
+            <span class="profile-name" onclick="toggleDropdown()">Melo</span>
+            <div class="dropdown-menu" id="dropdown-menu">
+                <a href="https://github.com/Melo-Professional/" target="_blank">My GitHub</a>
+                <a href="https://melo-professional.github.io/MeshCentral-config-sanitizer/" target="_blank">Config Sanitizer</a>
+                <a href="https://github.com/Melo-Professional/MeshCentral-Stylish-UI" target="_blank">Stylish UI</a>
+            </div>
+        </div>
     </div>
-</div>
-
-<div style="display:flex; justify-content:center; gap:10px; padding:5px 10px; margin-bottom:20px; user-select:none;  ">
-<label id="uploadLabel">Upload
-  <input type="file" id="uploadConfig" accept=".json, .txt">
-</label>
-<button id="downloadBtn">Download</button>
 </div>
 
 <div class="container">
     <div class="column left" id="formContainer"></div>
 	<div class="resizer"></div>
-    <div class="column right" id="jsonPreview"></div>
+    <div class="column right">
+        <textarea id="jsonPreview"></textarea>
+    </div>
 </div>
 
 <div class="tooltip" id="tooltip"></div>
 
 <script>
+function toggleDropdown() {
+    document.getElementById("dropdown-menu").style.display = 
+        document.getElementById("dropdown-menu").style.display === "block" ? "none" : "block";
+}
+
 let schema = null;
 let ajv = new Ajv({ allErrors:true, verbose:true, schemaId:'id' });
 let configData = {};
 let originalData = null;
 let properties = null;
 const tooltip = document.getElementById('tooltip');
+let editor;
+
+// Help tooltip hover fix
+let timeout;
+const helpIcon = document.querySelector('.help-icon');
+const helpTooltip = document.querySelector('.help-tooltip');
+helpIcon.addEventListener('mouseenter', () => {
+  helpTooltip.style.display = 'block';
+});
+helpIcon.addEventListener('mouseleave', () => {
+  timeout = setTimeout(() => {
+    helpTooltip.style.display = 'none';
+  }, 300);
+});
+helpTooltip.addEventListener('mouseenter', () => {
+  clearTimeout(timeout);
+});
+helpTooltip.addEventListener('mouseleave', () => {
+  helpTooltip.style.display = 'none';
+});
 
 // Function to recursively remove keys starting with '_' 
 function cleanUnderscore(obj) {
@@ -285,8 +467,8 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Tab') {
         e.preventDefault();
         let current = document.activeElement;
-        if (!current.matches('input[type="text"], input[type="number"], textarea, select, .three-state-toggle')) return;
-        let allTabbables = Array.from(document.querySelectorAll('input[type="text"], input[type="number"], textarea, select, .three-state-toggle'));
+        if (!current.matches('input[type="text"], input[type="number"], textarea, select, .three-state-toggle, button')) return;
+        let allTabbables = Array.from(document.querySelectorAll('input[type="text"], input[type="number"], textarea, select, .three-state-toggle, button'));
         let index = allTabbables.indexOf(current);
         if (index === -1) return;
         let nextIndex = e.shiftKey ? (index - 1 + allTabbables.length) % allTabbables.length : (index + 1) % allTabbables.length;
@@ -302,6 +484,45 @@ function expandPathTo(el) {
         parent = parent.parentNode.closest('.content');
     }
 }
+
+// Copy functionality
+document.getElementById('copyBtn').addEventListener('click', async function() {
+    try {
+        const jsonContent = editor.getValue();
+        await navigator.clipboard.writeText(jsonContent);
+        
+        // Visual feedback
+        const btn = this;
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        
+        // Reset after 2 seconds
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.classList.remove('copied');
+        }, 2000);
+    } catch (err) {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = editor.getValue();
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        // Visual feedback
+        const btn = this;
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.classList.remove('copied');
+        }, 2000);
+    }
+});
 
 // Download
 document.getElementById('downloadBtn').addEventListener('click', function() {
@@ -320,11 +541,11 @@ async function loadSchema() {
         const response = await fetch('https://raw.githubusercontent.com/Ylianst/MeshCentral/master/meshcentral-config-schema.json');
         schema = await response.json();
         properties = schema.properties;
-        document.getElementById('validationMsg').innerHTML = '<span style="color:#0f0">Schema loaded, ready to go!</span>';
+        document.getElementById('validationMsg').innerHTML = '<span style="color:#0f0"><a href="https://raw.githubusercontent.com/Ylianst/MeshCentral/master/meshcentral-config-schema.json" target="_blank" style="color:#0f0; text-decoration:underline;">Schema</a> loaded, ready to go!</span>';
         generateForm(properties, '', document.getElementById('formContainer'), 0, false);
         updatePreview();
     } catch(e){
-        document.getElementById('validationMsg').innerHTML = '<span style="color:red">Error loading schema: '+e.message+'</span>';
+        document.getElementById('validationMsg').innerHTML = '<span style="color:red">Error loading <a href="https://raw.githubusercontent.com/Ylianst/MeshCentral/master/meshcentral-config-schema.json" target="_blank" style="color:red; text-decoration:underline;">schema</a>: '+e.message+'</span>';
     }
 }
 
@@ -504,13 +725,20 @@ function generateForm(props, parentKey, container, level=0, expand=false){
                 const toggle = document.createElement('div'); toggle.className = 'three-state-toggle'; toggle.id = fullId; toggle.dataset.state = 'unset'; toggle.tabIndex = 0;
                 const labelSpan = document.createElement('span'); labelSpan.className = 'label'; labelSpan.textContent = 'unset';
                 toggle.appendChild(labelSpan);
-                toggle.addEventListener('click', function() {
+                const toggleState = function() {
                     const states = ['unset', 'true', 'false'];
-                    let idx = states.indexOf(this.dataset.state);
+                    let idx = states.indexOf(toggle.dataset.state);
                     let next = states[(idx + 1) % 3];
-                    this.dataset.state = next;
+                    toggle.dataset.state = next;
                     labelSpan.textContent = next;
                     updatePreview();
+                };
+                toggle.addEventListener('click', toggleState);
+                toggle.addEventListener('keydown', function(e) {
+                    if (e.key === ' ' || e.key === 'Enter') {
+                        e.preventDefault();
+                        toggleState();
+                    }
                 });
                 if(prop.description){
                     const ti = document.createElement('span'); ti.className='tooltip-icon'; ti.textContent='?';
@@ -524,6 +752,8 @@ function generateForm(props, parentKey, container, level=0, expand=false){
                     input = document.createElement('input'); input.type='text'; input.id=fullId;
                 } else if(prop.type==='number' || (Array.isArray(prop.type) && prop.type.includes('number'))){
                     input = document.createElement('input'); input.type='number'; input.id=fullId;
+				} else if(prop.type==='integer' || (Array.isArray(prop.type) && prop.type.includes('integer'))){
+					input = document.createElement('input'); input.type='number'; input.id=fullId; input.step='1';
                 } else if(prop.type==='array' || (Array.isArray(prop.type) && prop.type.includes('array'))){
                     input = document.createElement('textarea'); input.id=fullId;
                     placeholder = prop.description || 'JSON array';
@@ -770,7 +1000,7 @@ function collectData(){
 // JSON Preview
 function updatePreview(){
     const data=collectData();
-    document.getElementById('jsonPreview').textContent=JSON.stringify(data,null,2);
+    editor.setValue(JSON.stringify(data,null,2));
 }
 
 // Upload config
@@ -837,8 +1067,18 @@ function populateForm(data){
     }
 }
 
-// Auto-load schema
-document.addEventListener('DOMContentLoaded', ()=>{ loadSchema(); });
+// Initialize CodeMirror
+document.addEventListener('DOMContentLoaded', ()=>{
+    editor = CodeMirror.fromTextArea(document.getElementById('jsonPreview'), {
+        mode: {name: "javascript", json: true},
+        theme: 'dracula',
+        lineNumbers: true,
+        readOnly: true,
+        viewportMargin: Infinity
+    });
+    loadSchema();
+});
 </script>
 </body>
 </html>
+</DOCUMENT>
