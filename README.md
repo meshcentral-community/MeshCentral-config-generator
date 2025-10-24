@@ -1,5 +1,8 @@
 # 🧩 MeshCentral Config Generator
 
+
+[![GitHub Repo stars](https://img.shields.io/github/stars/Melo-Professional/MeshCentral-config-generator?style=social)](https://github.com/Melo-Professional/MeshCentral-config-generator) [![GitHub forks](https://img.shields.io/github/forks/Melo-Professional/MeshCentral-config-generator)](https://github.com/Melo-Professional/MeshCentral-config-generator/forks) [![License](https://img.shields.io/github/license/Melo-Professional/MeshCentral-config-generator)](https://github.com/Melo-Professional/MeshCentral-config-generator/blob/main/LICENSE)
+
 **MeshCentral Config Generator** is a web-based tool designed to help administrators create and validate the `config.json` file used by [MeshCentral](https://meshcentral.com/).
 
 It provides a visual and intuitive interface to edit configuration keys, validate values against the official schema, and generate secure random keys — all directly in your browser.
