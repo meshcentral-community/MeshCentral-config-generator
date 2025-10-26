@@ -12,7 +12,7 @@ It provides a visual and intuitive interface to edit configuration keys, validat
 ## 🌐 Live Demo
 
 Access the online tool here:  
-👉 **[https://melo-professional.github.io/MeshCentral-config-generator/](https://melo-professional.github.io/MeshCentral-config-generator/)**
+👉 **[https://config.meshcentraltools.com/](https://config.meshcentraltools.com/)**
 
 ---
 
