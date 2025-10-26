@@ -74,6 +74,7 @@ h1 { text-align: center; padding: 2px; margin-block-start: 0; margin-block-end: 
     display: flex;
     align-items: center;
     gap: 8px;
+    cursor: pointer;
 }
 .profile-name {
     color: #ddd;
@@ -343,12 +344,12 @@ h1 { text-align: center; padding: 2px; margin-block-start: 0; margin-block-end: 
         </label>
         <button id="downloadBtn">Download</button>
         <button id="copyBtn">Copy</button>
-        <div class="profile-dropdown">
+        <div onclick="toggleDropdown()"class="profile-dropdown">
             <img src="https://avatars.githubusercontent.com/u/106290334" alt="Logo" class="logo">
-            <span class="profile-name" onclick="toggleDropdown()">Melo</span>
+            <span class="profile-name">Melo</span>
             <div class="dropdown-menu" id="dropdown-menu">
                 <a href="https://github.com/Melo-Professional/" target="_blank">My GitHub</a>
-                <a href="https://melo-professional.github.io/MeshCentral-config-sanitizer/" target="_blank">Config Sanitizer</a>
+                <a href="https://sanitizer.meshcentraltools.com/" target="_blank">Config Sanitizer</a>
                 <a href="https://github.com/Melo-Professional/MeshCentral-Stylish-UI" target="_blank">Stylish UI</a>
             </div>
         </div>
