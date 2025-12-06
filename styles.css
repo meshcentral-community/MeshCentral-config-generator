@@ -7,6 +7,9 @@ body {
     padding: 0;
     overflow-x: hidden;
     font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 h1 {
@@ -151,7 +154,7 @@ h1 {
 
 .container {
     display: flex;
-    height: calc(100vh - 60px);
+    flex: 1;
     overflow: hidden;
 }
 
@@ -568,6 +571,7 @@ h1 {
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
 }
+
 .custom-select-option.selected:last-child {
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
@@ -768,7 +772,7 @@ body {
     background: var(--scrollbar-track);
 }
 
-/* CodeMirror light theme */
+/* CodeMirror theme */
 .CodeMirror {
     background: var(--cm-bg, #2a2a3d) !important;
     color: var(--cm-text, #aaaaaa) !important;
@@ -784,4 +788,16 @@ body {
 
 .cm-s-dracula .cm-number {
     color: var(--cm-number, #ae81ff) !important;
+}
+
+.cm-s-default .CodeMirror-gutters,
+.cm-s-default.CodeMirror {
+    background-color: var(--cm-bg, #2a2a3d) !important;
+    color: var(--cm-text, #aaaaaa) !important;
+}
+
+.cm-s-dracula .CodeMirror-gutters,
+.cm-s-dracula.CodeMirror {
+    background-color: var(--cm-bg, #2a2a3d) !important;
+    color: var(--cm-text, #f8f8f2) !important;
 }
