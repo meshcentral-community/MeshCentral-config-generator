@@ -4,34 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeshCentral Config Generator</title>
+    <title>MCTools - Config Generator</title>
     <meta name="description"
         content="Generate custom configuration files for MeshCentral easily with our MeshCentral Config Generator. Simplify setup, customize server options, and deploy your Mesh" />
 
     <!-- Google / Search Engine Tags -->
-    <meta itemprop="name" content="MeshCentral Config Generator" />
+    <meta itemprop="name" content="MeshCentral Tools - Config Generator" />
     <meta itemprop="description"
-        content="Generate custom configuration files for MeshCentral easily with our MeshCentral Config Generator. Simplify setup, customize server options, and deploy your Mesh" />
-    <meta itemprop="image" content="https://meshcentraltools.com/images/meshCentralBanner.png" />
+        content="Generate custom configuration files for MeshCentral easily with our MeshCentral Tools - Config Generator. Simplify setup, customize server options, and deploy your Mesh" />
+    <meta itemprop="image" content="images/logo.png" />
 
     <!-- Facebook Meta Tags -->
     <meta property="og:url" content="https://config.meshcentraltools.com/" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="MeshCentral Config Generator" />
+    <meta property="og:title" content="MeshCentral Tools - Config Generator" />
     <meta property="og:description"
-        content="Generate custom configuration files for MeshCentral easily with our MeshCentral Config Generator. Simplify setup, customize server options, and deploy your Mesh" />
-    <meta property="og:image" content="https://meshcentraltools.com/images/meshCentralBanner.png" />
+        content="Generate custom configuration files for MeshCentral easily with our MeshCentral Tools - Config Generator. Simplify setup, customize server options, and deploy your Mesh" />
+    <meta property="og:image" content="images/logo.png" />
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="MeshCentral Config Generator" />
+    <meta name="twitter:title" content="MeshCentral Tools - Config Generator" />
     <meta name="twitter:description"
-        content="Generate custom configuration files for MeshCentral easily with our MeshCentral Config Generator. Simplify setup, customize server options, and deploy your Mesh" />
-    <meta name="twitter:image" content="https://meshcentraltools.com/images/meshCentralBanner.png" />
+        content="Generate custom configuration files for MeshCentral easily with our MeshCentral Tools - Config Generator. Simplify setup, customize server options, and deploy your Mesh" />
+    <meta name="twitter:image" content="images/logo.png" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ajv/6.12.6/ajv.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.11/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.11/theme/dracula.min.css">
+    <link rel="icon" type="image/png" href="images/logo.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.11/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.11/mode/javascript/javascript.min.js"></script>
 
@@ -47,7 +48,7 @@
 
     <div class="header-top">
         <div class="header-left">
-            <h1 style="margin: 0; padding: 0;">MeshCentral Config Generator</h1>
+            <h1 style="margin: 0; padding: 0;">MCTools - Config Generator</h1>
             <span class="help-icon">?
                 <div class="help-tooltip">
                     <p>This app is a configuration generator for MeshCentral, using the official schema from <a
@@ -62,9 +63,15 @@
                     </ul>
                 </div>
             </span>
-            <select id="versionSelector" title="Select MeshCentral version">
-                <option value="">Loading versions...</option>
-            </select>
+            <div id="versionSelectorContainer" class="custom-select-container">
+                <div id="versionSelectorDisplay" class="custom-select-display" title="Select MeshCentral version">
+                    <span id="versionText">Loading versions...</span>
+                    <span class="dropdown-arrow"></span>
+                </div>
+                <div id="versionSelectorDropdown" class="custom-select-dropdown">
+                    <div id="versionSelectorOptions" class="custom-select-options"></div>
+                </div>
+            </div>
             <div id="validationMsg"></div>
         </div>
         <div class="header-right">
@@ -87,8 +94,8 @@
 
             <div onclick="toggleDropdown()" class="profile-dropdown">
 
-                <img src="https://avatars.githubusercontent.com/u/106290334" alt="Logo" class="logo">
-                <span class="profile-name">Melo</span>
+                <img src="images/logo.png" alt="Logo" class="logo">
+                <span class="profile-name">MC Tools</span>
                 <div class="dropdown-menu" id="dropdown-menu">
                     <a href="https://github.com/Melo-Professional/" target="_blank">My GitHub</a>
                     <a href="https://sanitizer.meshcentraltools.com/" target="_blank">Config Sanitizer</a>

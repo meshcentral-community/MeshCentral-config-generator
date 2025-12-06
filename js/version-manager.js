@@ -43,40 +43,75 @@ function getSchemaUrl(version) {
 
 // Populate version selector dropdown
 function buildVersionSelector(releases, selectedVersion) {
-    const selector = document.getElementById('versionSelector');
-    if (!selector) return;
+    const dropdown = document.getElementById('versionSelectorDropdown');
+    const optionsContainer = document.getElementById('versionSelectorOptions');
+    const display = document.getElementById('versionSelectorDisplay');
+    const textSpan = document.getElementById('versionText');
+    if (!dropdown || !optionsContainer || !display || !textSpan) return;
 
     // Clear existing options
-    selector.innerHTML = '';
+    optionsContainer.innerHTML = '';
+
+    const createOption = (value, text, isSelected) => {
+        const div = document.createElement('div');
+        div.className = 'custom-select-option';
+        if (isSelected) div.classList.add('selected');
+        div.textContent = text;
+        div.dataset.value = value;
+        
+        div.onclick = async (e) => {
+            e.stopPropagation();
+            
+            // Update display
+            textSpan.textContent = text;
+            
+            // Close dropdown
+            dropdown.classList.remove('show');
+            
+            // Trigger load if changed
+            const saved = getSavedVersion();
+            if (saved !== value) {
+                saveVersion(value);
+                
+                // Show loading indicator
+                const validationMsg = document.getElementById('validationMsg');
+                if (validationMsg) validationMsg.innerHTML = '<span style="color: #888;">Loading schema...</span>';
+
+                if (typeof loadSchemaVersion === 'function') {
+                    await loadSchemaVersion(value);
+                }
+                
+                // Update selected class
+                optionsContainer.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+                div.classList.add('selected');
+            }
+        };
+        return div;
+    };
 
     if (!releases || releases.length === 0) {
-        // Fallback to master if no releases found
-        const option = document.createElement('option');
-        option.value = 'master';
-        option.textContent = 'master (latest development)';
-        selector.appendChild(option);
+        // Fallback
+        const opt = createOption('master', 'master (latest development)', selectedVersion === 'master');
+        optionsContainer.appendChild(opt);
+        if (selectedVersion === 'master') textSpan.textContent = 'master (latest development)';
         return;
     }
 
     // Add all releases
     releases.forEach((release, index) => {
-        const option = document.createElement('option');
-        option.value = release.tag_name;
-        option.textContent = `${release.tag_name}${index === 0 ? ' (latest)' : ''}`;
-        if (release.tag_name === selectedVersion) {
-            option.selected = true;
-        }
-        selector.appendChild(option);
+        const text = `${release.tag_name}${index === 0 ? ' (latest)' : ''}`;
+        const isSelected = release.tag_name === selectedVersion;
+        const opt = createOption(release.tag_name, text, isSelected);
+        optionsContainer.appendChild(opt);
+        if (isSelected) textSpan.textContent = text;
     });
 
     // Add master branch option at the end
-    const masterOption = document.createElement('option');
-    masterOption.value = 'master';
-    masterOption.textContent = 'master (development)';
-    if (selectedVersion === 'master') {
-        masterOption.selected = true;
-    }
-    selector.appendChild(masterOption);
+    const masterText = 'master (development)';
+    const isMaster = selectedVersion === 'master';
+    const masterOpt = createOption('master', masterText, isMaster);
+    optionsContainer.appendChild(masterOpt);
+    if (isMaster) textSpan.textContent = masterText;
 }
 
 // Get version to load (saved or latest)
@@ -98,12 +133,28 @@ function getVersionToLoad(releases) {
 
 // Initialize version selector
 async function initVersionSelector() {
-    const selector = document.getElementById('versionSelector');
-    if (!selector) return null;
+    const container = document.getElementById('versionSelectorContainer');
+    const display = document.getElementById('versionSelectorDisplay');
+    const dropdown = document.getElementById('versionSelectorDropdown');
+    const textSpan = document.getElementById('versionText');
+    
+    if (!container || !display || !dropdown) return null;
 
     // Show loading state
-    selector.innerHTML = '<option>Loading versions...</option>';
-    selector.disabled = true;
+    if(textSpan) textSpan.textContent = 'Loading versions...';
+    
+    // Toggle dropdown
+    display.onclick = (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('show');
+    };
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+        if (!container.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
 
     // Fetch releases
     const releases = await fetchReleases();
@@ -113,20 +164,6 @@ async function initVersionSelector() {
 
     // Build selector with all versions
     buildVersionSelector(releases, versionToLoad);
-    selector.disabled = false;
-
-    // Add change event listener
-    selector.addEventListener('change', async function () {
-        const newVersion = this.value;
-        saveVersion(newVersion);
-
-        // Show loading indicator
-        const validationMsg = document.getElementById('validationMsg');
-        validationMsg.innerHTML = '<span style="color: #888;">Loading schema...</span>';
-
-        // Reload schema with new version
-        await loadSchemaVersion(newVersion);
-    });
 
     return { releases, versionToLoad };
 }

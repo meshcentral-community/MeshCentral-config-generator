@@ -255,4 +255,17 @@ function initUIHandlers() {
     initUploadButton();
     initFormatToggle();
     initThemeToggle();
+    initDropdownOutsideClick();
+}
+function initDropdownOutsideClick() {
+    document.addEventListener('click', function(event) {
+        const profileDropdown = document.querySelector('.profile-dropdown');
+        const dropdownMenu = document.getElementById("dropdown-menu");
+        
+        if (profileDropdown && !profileDropdown.contains(event.target)) {
+            if (dropdownMenu && dropdownMenu.style.display === 'block') {
+                dropdownMenu.style.display = 'none';
+            }
+        }
+    });
 }

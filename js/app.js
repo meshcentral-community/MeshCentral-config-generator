@@ -9,6 +9,7 @@ let properties = null;
 const tooltip = document.getElementById('tooltip');
 let editor;
 let currentFormat = 'json'; // track current editor format (json or yaml)
+let lastSchemaLoadTime = null;
 
 // Load schema from MeshCentral repository
 async function loadSchema() {
@@ -40,8 +41,35 @@ async function loadSchemaVersion(version) {
         updatePreview();
 
         // Update validation message with version info
+        lastSchemaLoadTime = Date.now();
         const versionText = version === 'master' ? 'master (development)' : `v${version}`;
-        document.getElementById('validationMsg').innerHTML = `<span style="color:var(--text-schema, #0f0)"><a href="${schemaUrl}" target="_blank" style="color:var(--text-schema, #0f0); text-decoration:underline;">Schema ${versionText}</a> loaded, ready to go!</span>`;
+        const msgContainer = document.getElementById('validationMsg');
+        
+        msgContainer.innerHTML = `
+            <span class="schema-status-container" style="position:relative; cursor:help; display:inline-flex; align-items:center; gap:5px;">
+                <span style="color:var(--text-schema, #0f0)">
+                    <a href="${schemaUrl}" target="_blank" style="color:var(--text-schema, #0f0); text-decoration:underline;">Schema ${versionText}</a> loaded, ready to go!
+                </span>
+                <span class="help-icon" style="font-size:1em; margin:0;">?</span>
+                <div class="help-tooltip" style="top: 1rem; left: 50%; transform: translateX(-50%); width: max-content; z-index: 100;">
+                    <span id="schemaLastLoadedTime">just now</span>
+                </div>
+            </span>`;
+
+        const statusContainer = msgContainer.querySelector('.schema-status-container');
+        const tooltipDiv = msgContainer.querySelector('.help-tooltip');
+        const timeSpan = msgContainer.querySelector('#schemaLastLoadedTime');
+
+        if (statusContainer && tooltipDiv && timeSpan) {
+            statusContainer.addEventListener('mouseenter', () => {
+                timeSpan.textContent = formatRelativeTime(lastSchemaLoadTime);
+                tooltipDiv.style.display = 'block';
+            });
+            statusContainer.addEventListener('mouseleave', () => {
+                tooltipDiv.style.display = 'none';
+            });
+        }
+
     } catch (e) {
         const schemaUrl = getSchemaUrl(version);
         document.getElementById('validationMsg').innerHTML = `<span style="color:red">Error loading <a href="${schemaUrl}" target="_blank" style="color:red; text-decoration:underline;">schema</a>: ${e.message}</span>`;

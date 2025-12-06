@@ -25,7 +25,7 @@ h1 {
     background: var(--input-bg, #1e1e2f);
     color: var(--btn-text, #c9d1d8);
     border: 1px solid var(--input-border, #55555530);
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 4px 8px;
     font-size: 13px;
     cursor: pointer;
@@ -88,7 +88,7 @@ h1 {
     top: 100%;
     right: 0;
     background-color: var(--bg, #21262d);
-    border: 1px solid #30363d;
+    border: 1px solid #30363d4f;
     border-radius: 6px;
     min-width: 150px;
     display: none;
@@ -103,11 +103,21 @@ h1 {
     text-decoration: none;
     padding: 8px 16px;
     display: block;
-    transition: background-color 0.2s ease;
 }
 
 .dropdown-menu a:hover {
     background-color: var(--btn-hover, #444);
+    border-radius: 0;
+}
+
+.dropdown-menu a:first-child:hover {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.dropdown-menu a:last-child:hover {
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 .logo {
@@ -129,8 +139,9 @@ h1 {
     top: 30px;
     left: 0;
     width: 300px;
-    background: #333;
-    color: #fff;
+    background: var(--tooltip-bg, #333);
+    color: var(--tooltip-text, #fff);
+    border: 1px solid var(--tooltip-border, #444);
     padding: 10px;
     border-radius: 6px;
     z-index: 10;
@@ -234,8 +245,9 @@ h1 {
 
 .tooltip {
     position: absolute;
-    background: #333;
-    color: #fff;
+    background: var(--tooltip-bg, #333);
+    color: var(--tooltip-text, #fff);
+    border: 1px solid var(--tooltip-border, #444);
     padding: 3px 6px;
     border-radius: 4px;
     font-size: 1.1em;
@@ -450,6 +462,117 @@ h1 {
     background: #222;
 }
 
+.custom-select-container {
+    position: relative;
+    margin-left: 10px;
+    min-width: 150px;
+    font-size: 13px;
+    user-select: none;
+}
+
+.custom-select-display {
+    background: var(--input-bg, #1e1e2f);
+    color: var(--btn-text, #c9d1d8);
+    border: 1px solid var(--input-border, #55555530);
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropdown-arrow {
+    border: solid currentColor;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 2px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    margin-left: 8px;
+    opacity: 0.7;
+    margin-bottom: 2px;
+    width: 3px;
+    height: 3px;
+}
+
+.custom-select-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    min-width: 200px;
+    background-color: var(--bg, #21262d);
+    border: 1px solid #30363d4f;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    overflow: hidden;
+    flex-direction: column;
+    padding: 0;
+}
+
+.custom-select-options {
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+    padding-right: 1px;
+}
+
+.custom-select-options::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-select-options::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-select-options::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.custom-select-dropdown.show {
+    display: flex;
+}
+
+.custom-select-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--text-primary, #c9d1d8);
+}
+
+.custom-select-option:hover {
+    background-color: var(--btn-hover, #444);
+    border-radius: 0;
+}
+
+.custom-select-option:first-child:hover {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.custom-select-option:last-child:hover {
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.custom-select-option.selected {
+    background-color: var(--btn-hover, #383838);
+    font-weight: bold;
+    border-radius: 0;
+}
+
+.custom-select-option.selected:first-child {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+.custom-select-option.selected:last-child {
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
 /* Mobile adaptations */
 @media (max-width: 768px) {
     .header-top {
@@ -588,6 +711,9 @@ h1 {
     --section-header: #2c2c44;
     --scrollbar: #555;
     --scrollbar-track: #222;
+    --tooltip-bg: #333;
+    --tooltip-text: #fff;
+    --tooltip-border: #444;
 }
 
 /* ——— LIGHT MODE OVERRIDE ——— */
@@ -606,6 +732,9 @@ h1 {
     --scrollbar: #adb5bd;
     --scrollbar-track: #f1f3f5;
     ---background-badge: #b3b3b38a;
+    --tooltip-bg: #ffffff;
+    --tooltip-text: #212529;
+    --tooltip-border: #ced4da;
 }
 
 /* ——— APPLY VARIABLES ——— */
