@@ -1,5 +1,3 @@
-// Form Generation Functions
-
 // Add domain with specific name
 function addDomainWithName(content, domainName) {
     const section = document.createElement('div'); section.className = 'section';
@@ -26,6 +24,37 @@ function addDomain(content, addDomainRow) {
     updatePreview();
 }
 
+function positionTooltip(e, tooltip, text) {
+    tooltip.textContent = text;
+    tooltip.style.display = 'block';
+
+    let left = e.pageX + 10;
+    let top = e.pageY + 10;
+
+    // Get tooltip dimensions after setting content
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Check if tooltip would overflow right edge
+    if (left + tooltipRect.width > viewportWidth) {
+        left = e.pageX - tooltipRect.width - 10;
+    }
+
+    // Check if tooltip would overflow bottom edge
+    if (top + tooltipRect.height > viewportHeight) {
+        top = e.pageY - tooltipRect.height - 10;
+    }
+
+    // Ensure tooltip doesn't go off left edge
+    if (left < 0) {
+        left = 10;
+    }
+
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+}
+
 // Main form generation function
 function generateForm(props, parentKey, container, level = 0, expand = false) {
     Object.keys(props).forEach(key => {
@@ -42,7 +71,7 @@ function generateForm(props, parentKey, container, level = 0, expand = false) {
 
             if (prop.description) {
                 const ti = document.createElement('span'); ti.className = 'tooltip-icon'; ti.textContent = '?';
-                ti.onmouseenter = e => { tooltip.style.display = 'block'; tooltip.textContent = prop.description; tooltip.style.left = (e.pageX + 10) + 'px'; tooltip.style.top = (e.pageY + 10) + 'px'; };
+                ti.onmouseenter = e => positionTooltip(e, tooltip, prop.description);
                 ti.onmouseleave = () => { tooltip.style.display = 'none'; };
                 header.appendChild(ti);
             }
@@ -91,7 +120,7 @@ function generateForm(props, parentKey, container, level = 0, expand = false) {
 
             if (prop.description) {
                 const ti = document.createElement('span'); ti.className = 'tooltip-icon'; ti.textContent = '?';
-                ti.onmouseenter = e => { tooltip.style.display = 'block'; tooltip.textContent = prop.description; tooltip.style.left = (e.pageX + 10) + 'px'; tooltip.style.top = (e.pageY + 10) + 'px'; };
+                ti.onmouseenter = e => positionTooltip(e, tooltip, prop.description);
                 ti.onmouseleave = () => { tooltip.style.display = 'none'; };
                 header.appendChild(ti);
             }
@@ -174,7 +203,7 @@ function generateForm(props, parentKey, container, level = 0, expand = false) {
 
             if (prop.description) {
                 const ti = document.createElement('span'); ti.className = 'tooltip-icon'; ti.textContent = '?';
-                ti.onmouseenter = e => { tooltip.style.display = 'block'; tooltip.textContent = prop.description; tooltip.style.left = (e.pageX + 10) + 'px'; tooltip.style.top = (e.pageY + 10) + 'px'; };
+                ti.onmouseenter = e => positionTooltip(e, tooltip, prop.description);
                 ti.onmouseleave = () => { tooltip.style.display = 'none'; };
                 header.appendChild(ti);
             }
@@ -206,7 +235,7 @@ function generateForm(props, parentKey, container, level = 0, expand = false) {
 
             if (prop.description) {
                 const ti = document.createElement('span'); ti.className = 'tooltip-icon'; ti.textContent = '?';
-                ti.onmouseenter = e => { tooltip.style.display = 'block'; tooltip.textContent = prop.description; tooltip.style.left = (e.pageX + 10) + 'px'; tooltip.style.top = (e.pageY + 10) + 'px'; };
+                ti.onmouseenter = e => positionTooltip(e, tooltip, prop.description);
                 ti.onmouseleave = () => { tooltip.style.display = 'none'; };
                 header.appendChild(ti);
             }
@@ -233,7 +262,7 @@ function generateForm(props, parentKey, container, level = 0, expand = false) {
 
             if (prop.description) {
                 const ti = document.createElement('span'); ti.className = 'tooltip-icon'; ti.textContent = '?';
-                ti.onmouseenter = e => { tooltip.style.display = 'block'; tooltip.textContent = prop.description; tooltip.style.left = (e.pageX + 10) + 'px'; tooltip.style.top = (e.pageY + 10) + 'px'; };
+                ti.onmouseenter = e => positionTooltip(e, tooltip, prop.description);
                 ti.onmouseleave = () => { tooltip.style.display = 'none'; };
                 labelContainer.appendChild(ti);
             }

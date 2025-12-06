@@ -682,7 +682,7 @@ h1 {
         display: none;
     }
 
-    .help-tooltip {
+    .help-icon .help-tooltip {
         position: fixed;
         left: 50%;
         transform: translateX(-50%);
