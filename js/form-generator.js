@@ -220,11 +220,25 @@ function generateForm(props, parentKey, container, level = 0, expand = false) {
             container.appendChild(section);
         } else {
             const row = document.createElement('div'); row.className = 'field-row';
+
+            const labelContainer = document.createElement('div');
+            labelContainer.className = 'field-label-container';
+
             const keySpan = document.createElement('span'); keySpan.textContent = key + ': ';
             keySpan.style.fontWeight = 'bold';
-            row.appendChild(keySpan);
+            labelContainer.appendChild(keySpan);
+
             const badge = document.createElement('span'); badge.className = 'badge'; badge.textContent = prop.type;
-            row.appendChild(badge);
+            labelContainer.appendChild(badge);
+
+            if (prop.description) {
+                const ti = document.createElement('span'); ti.className = 'tooltip-icon'; ti.textContent = '?';
+                ti.onmouseenter = e => { tooltip.style.display = 'block'; tooltip.textContent = prop.description; tooltip.style.left = (e.pageX + 10) + 'px'; tooltip.style.top = (e.pageY + 10) + 'px'; };
+                ti.onmouseleave = () => { tooltip.style.display = 'none'; };
+                labelContainer.appendChild(ti);
+            }
+
+            row.appendChild(labelContainer);
 
             let input;
             const fullId = parentKey ? parentKey + '.' + key : key;
@@ -249,12 +263,6 @@ function generateForm(props, parentKey, container, level = 0, expand = false) {
                         toggleState();
                     }
                 });
-                if (prop.description) {
-                    const ti = document.createElement('span'); ti.className = 'tooltip-icon'; ti.textContent = '?';
-                    ti.onmouseenter = e => { tooltip.style.display = 'block'; tooltip.textContent = prop.description; tooltip.style.left = (e.pageX + 10) + 'px'; tooltip.style.top = (e.pageY + 10) + 'px'; };
-                    ti.onmouseleave = () => { tooltip.style.display = 'none'; };
-                    row.appendChild(ti);
-                }
                 row.appendChild(toggle);
             } else {
                 if (prop.type === 'string' || (Array.isArray(prop.type) && prop.type.includes('string'))) {
@@ -271,12 +279,6 @@ function generateForm(props, parentKey, container, level = 0, expand = false) {
                 }
                 input.placeholder = placeholder;
                 input.oninput = updatePreview;
-                if (prop.description) {
-                    const ti = document.createElement('span'); ti.className = 'tooltip-icon'; ti.textContent = '?';
-                    ti.onmouseenter = e => { tooltip.style.display = 'block'; tooltip.textContent = prop.description; tooltip.style.left = (e.pageX + 10) + 'px'; tooltip.style.top = (e.pageY + 10) + 'px'; };
-                    ti.onmouseleave = () => { tooltip.style.display = 'none'; };
-                    row.appendChild(ti);
-                }
                 row.appendChild(input);
             }
 
