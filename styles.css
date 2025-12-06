@@ -264,6 +264,9 @@ h1 {
     max-width: 280px;
     display: none;
     z-index: 10;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .content {
