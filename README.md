@@ -1,9 +1,11 @@
 <h1 align="center">MeshCentral Config Generator</h1>
 
 <p align="center">
-<a href="https://github.com/Melo-Professional/MeshCentral-config-generator"><img src="https://img.shields.io/github/stars/Melo-Professional/MeshCentral-config-generator?style=social" alt="stars"></a>
-<a href="https://github.com/Melo-Professional/MeshCentral-config-generator/forks"><img src="https://img.shields.io/github/forks/Melo-Professional/MeshCentral-config-generator" alt="forks"></a>
-<a href="https://github.com/Melo-Professional/MeshCentral-config-generator/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Melo-Professional/MeshCentral-config-generator" alt="license"></a>
+  <a href="https://github.com/Melo-Professional/MeshCentral-config-generator"><img src="https://img.shields.io/github/stars/Melo-Professional/MeshCentral-config-generator?style=social" alt="stars"></a>
+  <a href="https://github.com/Melo-Professional/MeshCentral-config-generator/forks"><img src="https://img.shields.io/github/forks/Melo-Professional/MeshCentral-config-generator?style=social" alt="forks"></a>
+  <a href="https://meshcentral.com"><img src="https://img.shields.io/badge/platform-MeshCentral-yellow.svg" alt="platform"></a>
+  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/license-Apache%202.0-9cf.svg" alt="license"></a>
+  <a href="#screenshots"><img src="https://img.shields.io/static/v1?label=made%20with&message=%E2%9D%A4&color=red"></a>
 </p>
 
 MeshCentral Config Generator is a web-based tool designed to help administrators create and validate the `config.json` file used by [MeshCentral](https://meshcentral.com/).
