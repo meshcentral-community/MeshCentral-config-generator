@@ -1,6 +1,10 @@
 <h1 align="center">MeshCentral Config Generator</h1>
 
 <p align="center">
+<img width="20%" alt="banner" src="https://raw.githubusercontent.com/Melo-Professional/MeshCentral-config-generator/refs/heads/main/images/logo.png" />
+</p>
+
+<p align="center">
   <a href="https://github.com/Melo-Professional/MeshCentral-config-generator"><img src="https://img.shields.io/github/stars/Melo-Professional/MeshCentral-config-generator?style=social" alt="stars"></a>
   <a href="https://github.com/Melo-Professional/MeshCentral-config-generator/forks"><img src="https://img.shields.io/github/forks/Melo-Professional/MeshCentral-config-generator?style=social" alt="forks"></a>
   <a href="https://meshcentral.com"><img src="https://img.shields.io/badge/platform-MeshCentral-yellow.svg" alt="platform"></a>
