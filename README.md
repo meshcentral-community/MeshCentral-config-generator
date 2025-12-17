@@ -10,7 +10,6 @@ MeshCentral Config Generator is a web-based tool designed to help administrators
 
 It provides a visual and intuitive interface to edit configuration keys, validate values against the official schema, and generate secure random keys — all directly in your browser.
 
----
 
 ## 🌐 Live Tool
 
@@ -32,7 +31,6 @@ https://config.meshcentraltools.com<br>
 - 🧠 **Type-aware Inputs** — form fields adapt to the data type defined in the schema.  
 - ⚡ **Real-time Preview** — instant visualization of the resulting `config.json`.  
 
----
 
 ## 🚀 Usage
 
@@ -41,3 +39,15 @@ https://config.meshcentraltools.com<br>
 3. Adjust settings using the intuitive editor.  
 4. Validate, preview, and export the generated configuration file.  
 
+
+## 🤝 Contributing
+Fork, improve, and PR! Ideas for enhancements are welcome.
+
+
+## 📄 License
+Apache 2.0 License—free to use, modify, and distribute. See [LICENSE](LICENSE).
+
+---
+
+**Built with ❤️ by [Melo](https://github.com/Melo-Professional)**  
+*Feedback? Open an issue or star the repo!*
