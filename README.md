@@ -1,20 +1,29 @@
-# 🧩 MeshCentral Config Generator
+<h1 align="center">MeshCentral Config Generator</h1>
 
+<p align="center">
+<a href="https://github.com/Melo-Professional/MeshCentral-config-generator"><img src="https://img.shields.io/github/stars/Melo-Professional/MeshCentral-config-generator?style=social" alt="stars"></a>
+<a href="https://github.com/Melo-Professional/MeshCentral-config-generator/forks"><img src="https://img.shields.io/github/forks/Melo-Professional/MeshCentral-config-generator" alt="forks"></a>
+<a href="https://github.com/Melo-Professional/MeshCentral-config-generator/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Melo-Professional/MeshCentral-config-generator" alt="license"></a>
+</p>
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/Melo-Professional/MeshCentral-config-generator?style=social)](https://github.com/Melo-Professional/MeshCentral-config-generator) [![GitHub forks](https://img.shields.io/github/forks/Melo-Professional/MeshCentral-config-generator)](https://github.com/Melo-Professional/MeshCentral-config-generator/forks) [![License](https://img.shields.io/github/license/Melo-Professional/MeshCentral-config-generator)](https://github.com/Melo-Professional/MeshCentral-config-generator/blob/main/LICENSE)
-
-**MeshCentral Config Generator** is a web-based tool designed to help administrators create and validate the `config.json` file used by [MeshCentral](https://meshcentral.com/).
+MeshCentral Config Generator is a web-based tool designed to help administrators create and validate the `config.json` file used by [MeshCentral](https://meshcentral.com/).
 
 It provides a visual and intuitive interface to edit configuration keys, validate values against the official schema, and generate secure random keys — all directly in your browser.
 
 ---
 
-## 🌐 Live Demo
+## 🌐 Live Tool
 
 Access the online tool here:  
-👉 **[https://config.meshcentraltools.com/](https://config.meshcentraltools.com/)**
+<p align="center">
+https://config.meshcentraltools.com<br>
+<br>
+  
+<a href="https://config.meshcentraltools.com/">
+<img width="90%" alt="image" src="https://github.com/user-attachments/assets/541aafa5-3a91-4206-86d1-08eb5e5411ac" />
+  </a>
+</p>
 
----
 
 ## ⚙️ Features
 
