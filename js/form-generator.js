@@ -324,6 +324,45 @@ function generateForm(props, parentKey, container, level = 0, expand = false) {
 // CustomFiles management functions
 let customFileSetCounter = 0;
 
+// Helper function to create a field row with badge and tooltip
+function createFieldRow(label, fieldType, dataField, placeholder, description) {
+    const row = document.createElement('div');
+    row.className = 'field-row';
+
+    const labelContainer = document.createElement('div');
+    labelContainer.className = 'field-label-container';
+
+    const labelSpan = document.createElement('span');
+    labelSpan.textContent = label + ': ';
+    labelSpan.style.fontWeight = 'bold';
+    labelContainer.appendChild(labelSpan);
+
+    const badge = document.createElement('span');
+    badge.className = 'badge';
+    badge.textContent = fieldType;
+    labelContainer.appendChild(badge);
+
+    if (description) {
+        const ti = document.createElement('span');
+        ti.className = 'tooltip-icon';
+        ti.textContent = '?';
+        ti.onmouseenter = e => positionTooltip(e, tooltip, description);
+        ti.onmouseleave = () => { tooltip.style.display = 'none'; };
+        labelContainer.appendChild(ti);
+    }
+
+    row.appendChild(labelContainer);
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.dataset.field = dataField;
+    input.placeholder = placeholder;
+    input.oninput = updatePreview;
+    row.appendChild(input);
+
+    return { row, input };
+}
+
 function addCustomFileSet(content, parentKey) {
     customFileSetCounter++;
     const setName = `custom-files-${customFileSetCounter}`;
@@ -373,50 +412,20 @@ function addCustomFileSet(content, parentKey) {
     nameRow.appendChild(removeBtn);
     setContent.appendChild(nameRow);
 
+    // Get schema for customFiles fields
+    const customFilesSchema = schema.properties.domains.additionalProperties.properties.customFiles.additionalProperties.properties;
+
     // CSS field
-    const cssRow = document.createElement('div');
-    cssRow.className = 'field-row';
-    const cssLabel = document.createElement('span');
-    cssLabel.textContent = 'CSS: ';
-    cssLabel.style.fontWeight = 'bold';
-    const cssInput = document.createElement('input');
-    cssInput.type = 'text';
-    cssInput.dataset.field = 'css';
-    cssInput.placeholder = 'file.css';
-    cssInput.oninput = updatePreview;
-    cssRow.appendChild(cssLabel);
-    cssRow.appendChild(cssInput);
-    setContent.appendChild(cssRow);
+    const cssField = createFieldRow('css', customFilesSchema.css.type, 'css', 'file1.css, file2.css', customFilesSchema.css.description);
+    setContent.appendChild(cssField.row);
 
     // JS field
-    const jsRow = document.createElement('div');
-    jsRow.className = 'field-row';
-    const jsLabel = document.createElement('span');
-    jsLabel.textContent = 'JS: ';
-    jsLabel.style.fontWeight = 'bold';
-    const jsInput = document.createElement('input');
-    jsInput.type = 'text';
-    jsInput.dataset.field = 'js';
-    jsInput.placeholder = 'file.js';
-    jsInput.oninput = updatePreview;
-    jsRow.appendChild(jsLabel);
-    jsRow.appendChild(jsInput);
-    setContent.appendChild(jsRow);
+    const jsField = createFieldRow('js', customFilesSchema.js.type, 'js', 'file1.js, file2.js', customFilesSchema.js.description);
+    setContent.appendChild(jsField.row);
 
     // Scope field
-    const scopeRow = document.createElement('div');
-    scopeRow.className = 'field-row';
-    const scopeLabel = document.createElement('span');
-    scopeLabel.textContent = 'Scope: ';
-    scopeLabel.style.fontWeight = 'bold';
-    const scopeInput = document.createElement('input');
-    scopeInput.type = 'text';
-    scopeInput.dataset.field = 'scope';
-    scopeInput.placeholder = 'scope';
-    scopeInput.oninput = updatePreview;
-    scopeRow.appendChild(scopeLabel);
-    scopeRow.appendChild(scopeInput);
-    setContent.appendChild(scopeRow);
+    const scopeField = createFieldRow('scope', customFilesSchema.scope.type, 'scope', 'login, default', customFilesSchema.scope.description);
+    setContent.appendChild(scopeField.row);
 
     // Insert before the "Add Custom File Set" button
     const addButton = content.querySelector('.add-custom-file-btn');
@@ -481,53 +490,23 @@ function loadCustomFileSets(content, customFilesData, parentKey) {
         nameRow.appendChild(removeBtn);
         setContent.appendChild(nameRow);
 
+        // Get schema for customFiles fields
+        const customFilesSchema = schema.properties.domains.additionalProperties.properties.customFiles.additionalProperties.properties;
+
         // CSS field
-        const cssRow = document.createElement('div');
-        cssRow.className = 'field-row';
-        const cssLabel = document.createElement('span');
-        cssLabel.textContent = 'CSS: ';
-        cssLabel.style.fontWeight = 'bold';
-        const cssInput = document.createElement('input');
-        cssInput.type = 'text';
-        cssInput.dataset.field = 'css';
-        cssInput.value = setData.css || '';
-        cssInput.placeholder = 'file.css';
-        cssInput.oninput = updatePreview;
-        cssRow.appendChild(cssLabel);
-        cssRow.appendChild(cssInput);
-        setContent.appendChild(cssRow);
+        const cssField = createFieldRow('css', customFilesSchema.css.type, 'css', 'file1.css, file2.css', customFilesSchema.css.description);
+        cssField.input.value = Array.isArray(setData.css) ? setData.css.join(', ') : (setData.css || '');
+        setContent.appendChild(cssField.row);
 
         // JS field
-        const jsRow = document.createElement('div');
-        jsRow.className = 'field-row';
-        const jsLabel = document.createElement('span');
-        jsLabel.textContent = 'JS: ';
-        jsLabel.style.fontWeight = 'bold';
-        const jsInput = document.createElement('input');
-        jsInput.type = 'text';
-        jsInput.dataset.field = 'js';
-        jsInput.value = setData.js || '';
-        jsInput.placeholder = 'file.js';
-        jsInput.oninput = updatePreview;
-        jsRow.appendChild(jsLabel);
-        jsRow.appendChild(jsInput);
-        setContent.appendChild(jsRow);
+        const jsField = createFieldRow('js', customFilesSchema.js.type, 'js', 'file1.js, file2.js', customFilesSchema.js.description);
+        jsField.input.value = Array.isArray(setData.js) ? setData.js.join(', ') : (setData.js || '');
+        setContent.appendChild(jsField.row);
 
         // Scope field
-        const scopeRow = document.createElement('div');
-        scopeRow.className = 'field-row';
-        const scopeLabel = document.createElement('span');
-        scopeLabel.textContent = 'Scope: ';
-        scopeLabel.style.fontWeight = 'bold';
-        const scopeInput = document.createElement('input');
-        scopeInput.type = 'text';
-        scopeInput.dataset.field = 'scope';
-        scopeInput.value = setData.scope || '';
-        scopeInput.placeholder = 'scope';
-        scopeInput.oninput = updatePreview;
-        scopeRow.appendChild(scopeLabel);
-        scopeRow.appendChild(scopeInput);
-        setContent.appendChild(scopeRow);
+        const scopeField = createFieldRow('scope', customFilesSchema.scope.type, 'scope', 'login, default', customFilesSchema.scope.description);
+        scopeField.input.value = Array.isArray(setData.scope) ? setData.scope.join(', ') : (setData.scope || '');
+        setContent.appendChild(scopeField.row);
 
         // Insert before the "Add Custom File Set" button
         const addButton = content.querySelector('.add-custom-file-btn');

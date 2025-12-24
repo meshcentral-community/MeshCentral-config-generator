@@ -51,9 +51,15 @@ function collectSub(props, parentKey) {
                     if (nameInput && nameInput.value) {
                         const name = nameInput.value;
                         const fileSet = {};
-                        if (cssInput && cssInput.value) fileSet.css = cssInput.value;
-                        if (jsInput && jsInput.value) fileSet.js = jsInput.value;
-                        if (scopeInput && scopeInput.value) fileSet.scope = scopeInput.value;
+                        if (cssInput && cssInput.value) {
+                            fileSet.css = cssInput.value.split(',').map(s => s.trim()).filter(s => s !== '');
+                        }
+                        if (jsInput && jsInput.value) {
+                            fileSet.js = jsInput.value.split(',').map(s => s.trim()).filter(s => s !== '');
+                        }
+                        if (scopeInput && scopeInput.value) {
+                            fileSet.scope = scopeInput.value.split(',').map(s => s.trim()).filter(s => s !== '');
+                        }
 
                         if (Object.keys(fileSet).length > 0) {
                             customFilesObj[name] = fileSet;
