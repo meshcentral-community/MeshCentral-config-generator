@@ -198,11 +198,75 @@ function collectData() {
                 if (val !== undefined) {
                     obj[key] = val; // Direct assignment for top-level leaves
                 } else if (obj.hasOwnProperty(key)) {
-                    delete obj[key]; // Remove if the form field is empty and it existed in originalData
+                    // This was already here, but good/redundant
+                    delete obj[key];
                 }
             }
         }
     });
 
+    // Cleanup empty fields (post-processing to remove keys that were cleared in form)
+    cleanupEmptyFields(obj, topProps, '');
+
     return { "$schema": schema.id, ...obj };
+}
+
+// Recursively remove keys if their form fields are empty/unset
+function cleanupEmptyFields(obj, props, parentKey) {
+    if (!obj || !props) return;
+
+    Object.keys(props).forEach(key => {
+        if (key.startsWith('_')) return;
+
+        const prop = props[key];
+        const fullId = parentKey ? parentKey + '.' + key : key;
+
+        // Special handling for domains
+        if (key === 'domains' && obj.domains) {
+            const domainProps = prop.additionalProperties.properties;
+            Object.keys(obj.domains).forEach(d => {
+                const pKey = d === '' ? 'domains.' : `domains.${d}`;
+                cleanupEmptyFields(obj.domains[d], domainProps, pKey);
+            });
+            return;
+        }
+
+        // Special customFiles
+        if (key === 'customFiles') {
+            const content = document.getElementById(fullId + '.content');
+            if (content) {
+                const sets = content.querySelectorAll('.section[data-customfile-set]');
+                if (sets.length === 0) {
+                    delete obj[key];
+                }
+            }
+            return;
+        }
+
+        // Object recursion
+        if ((prop.type === 'object' || (Array.isArray(prop.type) && prop.type.includes('object'))) && prop.properties) {
+            if (obj[key]) {
+                cleanupEmptyFields(obj[key], prop.properties, fullId);
+                if (Object.keys(obj[key]).length === 0) {
+                    delete obj[key];
+                }
+            }
+            return;
+        }
+
+        // Leaf values
+        const element = document.getElementById(fullId);
+        if (element) {
+            let isEmpty = false;
+            if (element.classList.contains('three-state-toggle')) {
+                if (element.dataset.state === 'unset') isEmpty = true;
+            } else if (element.value !== undefined && element.value.trim() === '') {
+                isEmpty = true;
+            }
+
+            if (isEmpty) {
+                delete obj[key];
+            }
+        }
+    });
 }

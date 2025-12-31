@@ -44,7 +44,7 @@ async function loadSchemaVersion(version) {
         lastSchemaLoadTime = Date.now();
         const versionText = version === 'master' ? 'master (development)' : `v${version}`;
         const msgContainer = document.getElementById('validationMsg');
-        
+
         msgContainer.innerHTML = `
             <span class="schema-status-container" style="position:relative; cursor:help; display:inline-flex; align-items:center; gap:5px;">
                 <span style="color:var(--text-schema, #0f0)">
@@ -167,6 +167,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load schema and generate form
     loadSchema();
+
+    // Initialize template selector
+    if (typeof initTemplateSelector === 'function') {
+        initTemplateSelector();
+    }
 
     // Initialize all UI handlers
     initUIHandlers();
