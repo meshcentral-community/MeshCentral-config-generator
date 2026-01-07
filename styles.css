@@ -461,9 +461,26 @@ h1 {
     background: #555 !important;
 }
 
-#copyBtn.copied {
+#copyBtn.copied,
+#pasteBtn.copied {
     background-color: #4caf50 !important;
     color: white;
+}
+
+/* === Paste Button === */
+#pasteBtn {
+    background-color: #2c2c44 !important;
+    color: #c9d1d8;
+    border: 1px solid #30363d;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#pasteBtn:hover {
+    background: #555 !important;
 }
 
 /* === Scrollbars Dark === */
@@ -778,6 +795,7 @@ h1 {
 #uploadLabel,
 #downloadBtn,
 #copyBtn,
+#pasteBtn,
 #formatToggle,
 #themeToggle {
     background: var(--btn-bg, #2c2c44) !important;
@@ -797,6 +815,7 @@ h1 {
 #uploadLabel:hover,
 #downloadBtn:hover,
 #copyBtn:hover,
+#pasteBtn:hover,
 #formatToggle:hover,
 #themeToggle:hover {
     background: var(--btn-hover, #555) !important;
@@ -806,6 +825,7 @@ h1 {
 #uploadLabel:hover,
 #downloadBtn:hover,
 #copyBtn:hover,
+#pasteBtn:hover,
 #formatToggle:hover,
 #themeToggle:hover {
     background: var(--btn-hover, #555) !important;

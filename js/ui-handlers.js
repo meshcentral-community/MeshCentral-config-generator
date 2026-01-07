@@ -155,6 +155,96 @@ function initDownloadButton() {
     });
 }
 
+// Paste functionality
+function initPasteButton() {
+    const processConfigData = (data) => {
+        if (typeof originalData !== 'undefined') {
+            originalData = JSON.parse(JSON.stringify(data));
+        }
+
+        // Add extra domains if they exist in the data
+        const domainsContent = document.getElementById('domainsContent');
+        if (domainsContent && data.domains) {
+            Object.keys(data.domains).forEach(domainName => {
+                if (domainName === '') return;
+                if (!domainsContent.querySelector(`[data-domain-name="${domainName}"]`)) {
+                    if (typeof addDomainWithName === 'function') {
+                        addDomainWithName(domainsContent, domainName);
+                    }
+                }
+            });
+        }
+        if (typeof populateForm === 'function') populateForm(data);
+        if (typeof updatePreview === 'function') updatePreview();
+    };
+
+    const handlePasteAction = (text) => {
+        try {
+            const data = JSON.parse(text);
+            processConfigData(data);
+
+            // Visual feedback
+            const btn = document.getElementById('pasteBtn');
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = 'Pasted!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }
+        } catch (err) {
+            const msg = document.getElementById('validationMsg');
+            if (msg) msg.innerHTML = '<span style="color:red">Paste Error: Invalid JSON</span>';
+            console.error(err);
+        }
+    };
+
+    // Button Click
+    const pasteBtn = document.getElementById('pasteBtn');
+    if (pasteBtn) {
+        pasteBtn.addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) handlePasteAction(text);
+            } catch (err) {
+                console.error('Failed to read clipboard:', err);
+                // Fallback to manual paste prompt if API fails? 
+                // For now, assume it works or user has permissions. 
+            }
+        });
+    }
+
+    // Global Paste Event (covers CTRL+V)
+    document.addEventListener('paste', (e) => {
+        // Ignore if pasting into an input field or CodeMirror
+        const active = document.activeElement;
+
+        // Check if inside CodeMirror hidden textarea
+        let isCodeMirror = false;
+        if (active && active.tagName === 'TEXTAREA' && active.parentNode && active.parentNode.classList.contains('CodeMirror')) {
+            isCodeMirror = true;
+        }
+
+        const isInput = active && (active.tagName === 'INPUT' || (active.tagName === 'TEXTAREA' && !isCodeMirror) || active.isContentEditable);
+
+        if (!isInput) {
+            const text = (e.clipboardData || window.clipboardData).getData('text');
+            if (text) {
+                // Try to parse as JSON first, only handle if valid JSON
+                try {
+                    JSON.parse(text); // check validity
+                    e.preventDefault(); // Prevent default only if it looks like we will handle it
+                    handlePasteAction(text);
+                } catch (e) {
+                    // Not JSON, ignore
+                }
+            }
+        }
+    });
+}
+
 // Upload functionality
 function initUploadButton() {
     document.getElementById('uploadConfig').addEventListener('change', function (e) {
@@ -251,6 +341,7 @@ function initUIHandlers() {
     initResizer();
     initTabNavigation();
     initCopyButton();
+    initPasteButton();
     initDownloadButton();
     initUploadButton();
     initFormatToggle();
@@ -258,10 +349,10 @@ function initUIHandlers() {
     initDropdownOutsideClick();
 }
 function initDropdownOutsideClick() {
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         const profileDropdown = document.querySelector('.profile-dropdown');
         const dropdownMenu = document.getElementById("dropdown-menu");
-        
+
         if (profileDropdown && !profileDropdown.contains(event.target)) {
             if (dropdownMenu && dropdownMenu.style.display === 'block') {
                 dropdownMenu.style.display = 'none';
