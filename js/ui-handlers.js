@@ -113,15 +113,18 @@ function initCopyButton() {
 // Download functionality
 function initDownloadButton() {
     document.getElementById('downloadBtn').addEventListener('click', function () {
-        try {
-            const data = collectData();
-            const jsonString = JSON.stringify(data, null, 2);
+        const isYaml = (typeof currentFormat !== 'undefined' && currentFormat === 'yaml');
+        const fileExt = isYaml ? 'yaml' : 'json';
+        const fileName = `config.${fileExt}`;
+        const mimeType = isYaml ? 'text/yaml' : 'application/json';
+        const fileContent = isYaml ? editor.getValue() : JSON.stringify(collectData(), null, 2);
 
-            // Method 1: Try using data URI (works better in Chrome)
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
+        try {
+            // Method 1: Try using data URI
+            const dataStr = `data:${mimeType};charset=utf-8,` + encodeURIComponent(fileContent);
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "config.json");
+            downloadAnchorNode.setAttribute("download", fileName);
 
             // Add to DOM, click, and remove
             document.body.appendChild(downloadAnchorNode);
@@ -133,14 +136,13 @@ function initDownloadButton() {
 
             // Fallback: Try blob method
             try {
-                const data = collectData();
-                const blob = new Blob([JSON.stringify(data, null, 2)], {
-                    type: 'application/json;charset=utf-8'
+                const blob = new Blob([fileContent], {
+                    type: `${mimeType};charset=utf-8`
                 });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'config.json';
+                a.download = fileName;
                 document.body.appendChild(a);
                 a.click();
                 setTimeout(() => {
@@ -149,7 +151,7 @@ function initDownloadButton() {
                 }, 250);
             } catch (fallbackError) {
                 console.error('Fallback download error:', fallbackError);
-                alert('Error downloading file. Please try copying the JSON instead.');
+                alert('Error downloading file. Please try copying the content instead.');
             }
         }
     });
@@ -180,7 +182,16 @@ function initPasteButton() {
 
     const handlePasteAction = (text) => {
         try {
-            const data = JSON.parse(text);
+            let data;
+            if (typeof currentFormat !== 'undefined' && currentFormat === 'yaml' && typeof jsyaml !== 'undefined') {
+                try {
+                    data = jsyaml.load(text);
+                } catch (yamlErr) {
+                    data = JSON.parse(text);
+                }
+            } else {
+                data = JSON.parse(text);
+            }
             processConfigData(data);
 
             // Visual feedback
@@ -299,6 +310,18 @@ function initFormatToggle() {
                 editor.setOption('readOnly', true);
                 document.getElementById('formatToggle').textContent = 'YAML';
                 currentFormat = 'json';
+                // Add extra domains if they exist in parsed YAML before populating form
+                const domainsContent = document.getElementById('domainsContent');
+                if (domainsContent && parsed && parsed.domains) {
+                    Object.keys(parsed.domains).forEach(domainName => {
+                        if (domainName === '') return;
+                        if (!domainsContent.querySelector(`[data-domain-name="${domainName}"]`)) {
+                            if (typeof addDomainWithName === 'function') {
+                                addDomainWithName(domainsContent, domainName);
+                            }
+                        }
+                    });
+                }
                 // populate form with new JSON (so accordion fields reflect changes)
                 if (parsed) populateForm(parsed);
                 updatePreview();
